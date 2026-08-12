@@ -126,9 +126,10 @@ button{cursor:pointer}
 /* ---- tree ---------------------------------------------------------------- */
 .tree{padding:0 12px;text-align:center}
 .tier{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
-.tier.couple{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;justify-items:center;gap:0}
+.tier.couple{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;justify-items:center;gap:0}
 .tier.kids{gap:14px}
 .spacer{width:1px}
+/* spouses share one top line with each other; the row centers the whole group */
 .side{display:flex;align-items:flex-start;justify-content:flex-start;--sh:80px}
 .side:has(.node.up){--sh:58px}
 .stem{width:1px;height:24px;background:var(--rule);margin:0 auto}
