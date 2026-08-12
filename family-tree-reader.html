@@ -128,10 +128,10 @@ button{cursor:pointer}
 .tier{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
 /* couple row: person stays on the page centre; sides may overflow their half */
 .tier.couple{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
-  align-items:start;justify-items:center;gap:0;width:100%;--person-sh:58px}
+  align-items:start;justify-items:center;column-gap:14px;width:100%;--person-sh:58px}
 .tier.couple:has(>.node.focus){--person-sh:141px}
 .tier.couple:has(>.node.down):not(:has(>.node.focus)){--person-sh:80px}
-.tier.kids{gap:14px}
+.tier.kids{gap:14px;justify-content:center;width:100%}
 .spacer{width:1px}
 /* co-wives share one top line; group is dropped so shield mid = person shield mid */
 .side{display:flex;align-items:flex-start;justify-content:flex-start;--sh:80px;
@@ -160,7 +160,12 @@ button{cursor:pointer}
 .node.focus .sh{width:112px;height:141px}
 .node.focus .nn{font-size:22px;font-weight:800}
 .node.focus .nr{font-size:13px;color:var(--oxblood);font-weight:600}
+/* equal slot width so long names don’t pull the child row off the stem */
+.node.down{width:76px;max-width:76px}
 .node.down .sh{width:64px;height:80px}
+.node.down .nn{font-size:13px;font-weight:600;max-width:76px;line-height:1.25;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
+  word-break:break-word;overflow-wrap:anywhere}
 .node.sib{width:48px;max-width:48px}
 .node.sib .sh{width:38px;height:48px}
 .node.sib .nn{font-size:12px;font-weight:400;max-width:48px;line-height:1.25;
@@ -172,8 +177,8 @@ button{cursor:pointer}
 /* siblings: up to 4 per row, extra rows stack down; first-row shield mid = person mid */
 .sibs{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:flex-start;gap:8px;
   min-width:0;max-width:min(100%,calc(4 * 48px + 3 * 8px));justify-self:end;
-  padding-top:calc((var(--person-sh) - 48px) / 2)}
-.sibs:empty{padding-top:0}
+  padding-top:calc((var(--person-sh) - 48px) / 2);padding-inline-end:4px}
+.sibs:empty{padding-top:0;padding-inline-end:0}
 
 /* ---- نسبت ---------------------------------------------------------------- */
 .lead{font-size:13px;color:var(--muted);text-align:center;margin:0 20px}
@@ -236,12 +241,18 @@ button{cursor:pointer}
 .empty{color:var(--muted);padding:18px 4px;font-size:14px}
 
 /* ---- about ---------------------------------------------------------------- */
-.about{padding:24px 22px 60px}
-.about .mark{display:block;width:200px;margin:0 auto 8px}
+.about{padding:24px 22px 60px;text-align:center}
+.about .mark{display:block;width:200px;margin:0 auto 12px}
 .about h2{font-size:19px;font-weight:600;margin:0 0 6px;text-align:center}
-.about h3{font-size:15px;font-weight:600;color:var(--oxblood);margin:0 0 6px}
-.about p{font-family:var(--naskh);font-size:18px;line-height:1.95;margin-bottom:10px}
+.about h3{font-size:15px;font-weight:600;color:var(--oxblood);margin:0 0 10px;text-align:center}
+.about p{font-family:var(--naskh);font-size:18px;line-height:1.95;margin-bottom:10px;text-align:justify}
 .about section{margin-top:8px}
+.marks-key{display:flex;justify-content:center;align-items:flex-start;gap:22px;margin:4px 0 16px}
+.marks-item{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:72px}
+.marks-icon{width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.marks-icon svg{display:block}
+.marks-name{font-size:14px;font-weight:600;color:var(--oxblood)}
+.marks-mean{font-size:12px;color:var(--muted);font-weight:600}
 
 /* ---- print ----------------------------------------------------------------- */
 .phead,.pfoot{display:none}
@@ -1165,7 +1176,7 @@ function start(archive, assets) {
   function renderAbout(app) {
     const w = el('div', 'about');
     const m = document.createElement('img');
-    m.className = 'mark'; m.src = assets.legend; m.alt = '';
+    m.className = 'mark'; m.src = assets.legend; m.alt = 'سرو، بته، نامشخص';
     w.appendChild(m);
     w.appendChild(el('h2', '', 'قواعد این آرشیو'));
 
@@ -1175,11 +1186,27 @@ function start(archive, assets) {
       paras.forEach(p => s.appendChild(el('p', '', p)));
       w.appendChild(el('div', 'girih'));
       w.appendChild(s);
+      return s;
     };
-    sec('سه نشان', [
-      'در این آرشیو سرو نشانهٔ مرد است، بته نشانهٔ زن، و حلقهٔ باز نشانهٔ جایی که جنسیت را نمی‌دانیم.',
+    const marksSec = sec('سه نشان', [
       'این قرارِ ماست، نه رسمی کهن؛ آن را از میان نقش‌های ایرانی برگزیدیم چون در کنار نشان خانواده می‌نشیند.',
     ]);
+    const key = el('div', 'marks-key');
+    [
+      ['m', 'سرو', 'مرد'],
+      ['f', 'بته', 'زن'],
+      [null, 'حلقه', 'نامشخص'],
+    ].forEach(([sex, name, meaning]) => {
+      const item = el('div', 'marks-item');
+      const icon = el('div', 'marks-icon');
+      icon.innerHTML = markSVG(sex, 36);
+      item.appendChild(icon);
+      item.appendChild(el('div', 'marks-name', name));
+      item.appendChild(el('div', 'marks-mean', meaning));
+      key.appendChild(item);
+    });
+    marksSec.insertBefore(key, marksSec.querySelector('p'));
+
     sec('شمارش نیاکان', [
       'پدربزرگ را جد اول گرفته‌ایم؛ پس جد دوم، پدرِ پدربزرگ است و همین‌طور بالاتر.',
       'این شمارش همه‌جا یکسان نیست و برخی خاندان‌ها یک نسل دیرتر آغاز می‌کنند. آنچه در این آرشیو می‌بینید بر همین قرار است.',
