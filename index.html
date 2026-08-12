@@ -126,11 +126,16 @@ button{cursor:pointer}
 /* ---- tree ---------------------------------------------------------------- */
 .tree{padding:0 12px;text-align:center}
 .tier{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
-.tier.couple{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;justify-items:center;gap:0}
+/* couple row: pad sides so SHIELD midlines match the person column */
+.tier.couple{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;justify-items:center;gap:0;
+  --person-sh:58px}
+.tier.couple:has(>.node.focus){--person-sh:141px}
+.tier.couple:has(>.node.down):not(:has(>.node.focus)){--person-sh:80px}
 .tier.kids{gap:14px}
 .spacer{width:1px}
-/* spouses share one top line with each other; the row centers the whole group */
-.side{display:flex;align-items:flex-start;justify-content:flex-start;--sh:80px}
+/* co-wives share one top line; group is dropped so shield mid = person shield mid */
+.side{display:flex;align-items:flex-start;justify-content:flex-start;--sh:80px;
+  padding-top:calc((var(--person-sh) - var(--sh)) / 2)}
 .side:has(.node.up){--sh:58px}
 .stem{width:1px;height:24px;background:var(--rule);margin:0 auto}
 .bar{width:26px;height:5px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
@@ -154,12 +159,17 @@ button{cursor:pointer}
 .node.focus .nn{font-size:22px;font-weight:800}
 .node.focus .nr{font-size:13px;color:var(--oxblood);font-weight:600}
 .node.down .sh{width:64px;height:80px}
+.node.sib{width:48px;max-width:48px}
 .node.sib .sh{width:38px;height:48px}
-.node.sib .nn{font-size:12px;font-weight:400}
+.node.sib .nn{font-size:12px;font-weight:400;max-width:48px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .node.sib .nr{display:none}
 .node.wed .nn{font-weight:400}
 .node.ghost .nn{color:var(--muted);font-weight:400}
-.sibs{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px}
+/* siblings: up to 4 per row, extra rows stack down; first-row shield mid = person mid */
+.sibs{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:flex-start;gap:8px;
+  max-width:calc(4 * 48px + 3 * 8px);
+  padding-top:calc((var(--person-sh) - 48px) / 2)}
+.sibs:empty{padding-top:0}
 
 /* ---- نسبت ---------------------------------------------------------------- */
 .lead{font-size:13px;color:var(--muted);text-align:center;margin:0 20px}
