@@ -161,7 +161,9 @@ button{cursor:pointer}
 .node.down .sh{width:64px;height:80px}
 .node.sib{width:48px;max-width:48px}
 .node.sib .sh{width:38px;height:48px}
-.node.sib .nn{font-size:12px;font-weight:400;max-width:48px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.node.sib .nn{font-size:12px;font-weight:400;max-width:48px;line-height:1.25;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
+  word-break:break-word;overflow-wrap:anywhere}
 .node.sib .nr{display:none}
 .node.wed .nn{font-weight:400}
 .node.ghost .nn{color:var(--muted);font-weight:400}
