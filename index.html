@@ -470,16 +470,14 @@ function createKinship(people) {
         const om = motherOf(target);
         if (om && om !== A.name) return sexOf(target) === 'f' ? 'نادختری' : 'ناپسری';
       }
-      /* deeper down his line: only her own descendants are hers */
+      /* down his line: her own descendants are hers; anyone else is «…ِ همسر» */
       const cb = chain(target), ih = cb.indexOf(h);
       if (ih >= 0 && ih < cb.length - 1) {
         const heir = cb[ih + 1], mo = motherOf(heir);
-        if (!(mo && mo === A.name)) {
-          const core = relate(h, target);
-          return (core ? ez(core) + ' ' : '') + 'همسر';
-        }
+        if (mo && mo === A.name) return relate(h, target);
       }
-      return relate(h, target);
+      const core = relate(h, target);
+      return core ? ez(core) + ' همسر' : null;
     }
 
     /* the target is married in */
