@@ -576,8 +576,6 @@ function start(archive, assets) {
     del(k) { try { localStorage.removeItem(k); } catch {} },
   };
   let me = store.get('me', null); if (!P[me]) me = null;
-  /* spouses are marriage attachments, not bloodline “you” */
-  if (me && P[me].spouseOf) { me = null; store.del('me'); }
   let picks = (store.get('picks', []) || []).filter(id => P[id]);
   let cur = 'ROOT';
   let view = 'person';                      // person | tree | link | about
@@ -778,12 +776,11 @@ function start(archive, assets) {
     const meBtn = el('button', '', cur === me ? 'این من نیستم' : 'این منم');
     meBtn.onclick = () => {
       if (cur === me) { me = null; store.del('me'); }
-      else if (P[cur].spouseOf) return; /* spouse records cannot be «شما» */
       else { me = cur; store.set('me', me); }
       render();
     };
-    /* hide «این منم» on spouse pages (keep «این من نیستم» if somehow set) */
-    if (!P[cur].spouseOf || cur === me) f.appendChild(meBtn);
+    /* spouses too — kinship already phrases from a wife’s point of view */
+    f.appendChild(meBtn);
 
     const pdf = el('button', '', 'ذخیره به صورت PDF');
     pdf.onclick = () => printPage(nameOf(cur), view !== 'person');
