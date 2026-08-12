@@ -1,0 +1,13 @@
+{
+  "name": "پنج در",
+  "short_name": "پنج در",
+  "start_url": "./challenge.html",
+  "display": "standalone",
+  "background_color": "#EFEDE8",
+  "theme_color": "#EFEDE8",
+  "icons": [
+    {"src": "icon-192-v4.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512-v4.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512-v4.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
