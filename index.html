@@ -579,6 +579,11 @@ function start(archive, assets) {
     del(k) { try { localStorage.removeItem(k); } catch {} },
   };
   let me = store.get('me', null); if (!P[me]) me = null;
+  /* ?me=ID — gift / challenge can land dad already as «من» */
+  try {
+    const meParam = new URLSearchParams(location.search).get('me');
+    if (meParam && P[meParam]) { me = meParam; store.set('me', me); }
+  } catch {}
   let picks = (store.get('picks', []) || []).filter(id => P[id]);
   let cur = 'ROOT';
   let view = 'person';                      // person | tree | link | about
