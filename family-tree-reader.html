@@ -130,8 +130,8 @@ button{cursor:pointer}
 .tier.kids{gap:14px}
 .spacer{width:1px}
 .side{display:flex;align-items:center;justify-content:flex-start}
-.tier.couple.focus-row .node.mate .sh{width:112px;height:141px}
-.tier.couple.focus-row>.sibs{padding-top:0}
+/* smaller spouse, dropped so its shield shares a midline with .focus */
+.tier.couple.focus-row>.side{padding-top:30px}
 .stem{width:1px;height:24px;background:var(--rule);margin:0 auto}
 .bar{width:26px;height:5px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
   flex:none;margin:0 6px}
@@ -163,6 +163,7 @@ button{cursor:pointer}
 
 /* ---- نسبت ---------------------------------------------------------------- */
 .lead{font-size:13px;color:var(--muted);text-align:center;margin:0 20px}
+.tree .lead{margin:6px 20px 22px}
 .verdict{font-size:17px;font-weight:600;margin:8px 20px;line-height:1.8;text-align:center}
 .verdict .also{display:block;margin-top:6px;font-size:14px;color:var(--oxblood)}
 .picks{margin:18px 20px 24px;border-top:1px solid var(--rule)}
@@ -586,8 +587,7 @@ function start(archive, assets) {
     const im = el('div', 'im');
     const src = id && photoSrc(id);
     if (src) { const g = document.createElement('img'); g.src = src; g.alt = ''; im.appendChild(g); }
-    else im.innerHTML = markSVG(id ? sexOf(id) : opts.sex,
-      (cls.includes('focus') || cls.includes('mate')) ? 42 : 26);
+    else im.innerHTML = markSVG(id ? sexOf(id) : opts.sex, cls.includes('focus') ? 42 : 26);
     sh.appendChild(im); n.appendChild(sh);
     n.appendChild(el('div', 'nn', label));
     if (sub) n.appendChild(el('div', 'nr', sub));
@@ -897,7 +897,7 @@ function start(archive, assets) {
     const side = el('div', 'side');
     spousesOf(cur).forEach((w, i) => {
       side.appendChild(el('div', 'bar'));
-      side.appendChild(shieldNode(w, 'mate', nameOf(w),
+      side.appendChild(shieldNode(w, 'down', nameOf(w),
         spousesOf(cur).length > 1 ? 'همسر ' + fa(i + 1) : 'همسر', { wed: true }));
     });
     f.appendChild(side);
