@@ -648,45 +648,60 @@ function start(archive, assets) {
 
   /* ---- navigation ----------------------------------------------------- */
   const scrollPos = Object.create(null);
-  let treePinY = null; /* viewport Y of the tapped shield — keep it under the finger */
+  try { history.scrollRestoration = 'manual'; } catch {}
+
   function saveScroll() {
     scrollPos[cur + ':' + view] = window.scrollY || window.pageYOffset || 0;
   }
+  function pinTreeShield(midY) {
+    const sh = document.querySelector('.node.focus .sh');
+    if (!sh || midY == null) return;
+    const r = sh.getBoundingClientRect();
+    const mid = r.top + r.height / 2;
+    const dy = mid - midY;
+    if (Math.abs(dy) > 0.5) {
+      const y = (window.pageYOffset || window.scrollY || 0) + dy;
+      window.scrollTo(0, y);
+    }
+  }
   function restoreScroll() {
     if (view === 'tree') {
-      const pin = treePinY;
-      treePinY = null;
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const sh = document.querySelector('.node.focus .sh');
-          if (pin != null && sh) {
-            const dy = sh.getBoundingClientRect().top - pin;
-            if (dy) window.scrollBy(0, dy);
-          } else {
-            window.scrollTo(0, scrollPos[cur + ':' + view] || 0);
-          }
-        });
-      });
+      window.scrollTo(0, scrollPos[cur + ':' + view] || 0);
       return;
     }
-    const y = scrollPos[cur + ':' + view] || 0;
-    requestAnimationFrame(() => window.scrollTo(0, y));
+    window.scrollTo(0, scrollPos[cur + ':' + view] || 0);
   }
   function go(id, keepLens, fromNode) {
     if (!P[id]) return;
-    /* in تبار: pin the tapped shield's screen Y so layout rescale doesn't jump */
+    /* keep the tapped shield’s midpoint under the finger (no page jump) */
+    let pinMid = null;
     if (view === 'tree' && fromNode) {
       const sh = fromNode.querySelector('.sh') || fromNode;
-      treePinY = sh.getBoundingClientRect().top;
-    } else {
-      treePinY = null;
+      const r = sh.getBoundingClientRect();
+      pinMid = r.top + r.height / 2;
     }
     saveScroll();
     cur = id;
     /* the lens persists while walking a line, so climbing does not cost two
        taps a generation; it resets when you arrive from elsewhere */
     if (!keepLens && view !== 'tree') view = 'person';
-    syncHash(); render(); restoreScroll();
+    syncHash();
+
+    const app = $('app');
+    /* iOS clamps scroll when #app collapses — hold height through the rebuild */
+    const hold = view === 'tree' && pinMid != null;
+    if (hold) app.style.minHeight = app.offsetHeight + 'px';
+
+    render();
+
+    if (hold) {
+      pinTreeShield(pinMid);
+      app.style.minHeight = '';
+      /* one more pass after minHeight release / layout settle */
+      pinTreeShield(pinMid);
+    } else {
+      restoreScroll();
+    }
   }
   function syncHash() {
     /* pushState (not location.hash=) — assigning hash scrolls iOS Safari to top */
@@ -1041,6 +1056,12 @@ function start(archive, assets) {
     if (reduced || view !== 'tree') return;
     const mid = window.innerHeight / 2, span = window.innerHeight * 0.55;
     document.querySelectorAll('.node').forEach(n => {
+      /* focus stays put — dock scale on the active person causes a finger-jump */
+      if (n.classList.contains('focus')) {
+        n.style.transform = '';
+        n.style.opacity = '';
+        return;
+      }
       const r = n.getBoundingClientRect();
       const d = Math.min(1, Math.abs(r.top + r.height / 2 - mid) / span);
       n.style.transform = 'scale(' + (1.08 - 0.22 * d).toFixed(3) + ')';
