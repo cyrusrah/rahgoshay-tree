@@ -126,17 +126,19 @@ button{cursor:pointer}
 /* ---- tree ---------------------------------------------------------------- */
 .tree{padding:0 12px;text-align:center}
 .tier{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
-/* couple row: pad sides so SHIELD midlines match the person column */
-.tier.couple{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;justify-items:center;gap:0;
-  --person-sh:58px}
+/* couple row: person stays on the page centre; sides may overflow their half */
+.tier.couple{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  align-items:start;justify-items:center;gap:0;width:100%;--person-sh:58px}
 .tier.couple:has(>.node.focus){--person-sh:141px}
 .tier.couple:has(>.node.down):not(:has(>.node.focus)){--person-sh:80px}
 .tier.kids{gap:14px}
 .spacer{width:1px}
 /* co-wives share one top line; group is dropped so shield mid = person shield mid */
 .side{display:flex;align-items:flex-start;justify-content:flex-start;--sh:80px;
+  min-width:0;max-width:100%;justify-self:start;
   padding-top:calc((var(--person-sh) - var(--sh)) / 2)}
 .side:has(.node.up){--sh:58px}
+.side>.node,.side>.bar{flex:none}
 .stem{width:1px;height:24px;background:var(--rule);margin:0 auto}
 .bar{width:26px;height:5px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
   flex:none;margin:calc((var(--sh) - 5px) / 2) 6px 0}
@@ -169,7 +171,7 @@ button{cursor:pointer}
 .node.ghost .nn{color:var(--muted);font-weight:400}
 /* siblings: up to 4 per row, extra rows stack down; first-row shield mid = person mid */
 .sibs{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:flex-start;gap:8px;
-  max-width:calc(4 * 48px + 3 * 8px);
+  min-width:0;max-width:min(100%,calc(4 * 48px + 3 * 8px));justify-self:end;
   padding-top:calc((var(--person-sh) - 48px) / 2)}
 .sibs:empty{padding-top:0}
 
