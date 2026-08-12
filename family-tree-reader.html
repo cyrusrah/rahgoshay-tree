@@ -193,6 +193,9 @@ button{cursor:pointer}
 /* ---- نسبت ---------------------------------------------------------------- */
 .lead{font-size:13px;color:var(--muted);text-align:center;margin:0 20px}
 .tree .lead{margin:6px 20px 22px}
+.me-action{display:flex;justify-content:center;margin:4px 20px 18px}
+.me-action button{color:var(--oxblood);font-size:14px;font-weight:600;min-height:44px;
+  text-decoration:underline;text-underline-offset:3px}
 .verdict{font-size:17px;font-weight:600;margin:8px 20px;line-height:1.8;text-align:center}
 .verdict .also{display:block;margin-top:6px;font-size:14px;color:var(--oxblood)}
 .picks{margin:18px 20px 24px;border-top:1px solid var(--rule)}
@@ -754,6 +757,16 @@ function start(archive, assets) {
     return w;
   }
 
+  function setMeButton(cls) {
+    const b = el('button', cls || '', cur === me ? 'این من نیستم' : 'این منم');
+    b.onclick = () => {
+      if (cur === me) { me = null; store.del('me'); }
+      else { me = cur; store.set('me', me); }
+      render();
+    };
+    return b;
+  }
+
   function footLinks() {
     const f = el('div', 'foot');
     const add = el('button', '', hasPick(cur) ? 'برداشتن از نسبت' : 'افزودن به نسبت');
@@ -773,14 +786,7 @@ function start(archive, assets) {
         f.appendChild(b);
       }
     }
-    const meBtn = el('button', '', cur === me ? 'این من نیستم' : 'این منم');
-    meBtn.onclick = () => {
-      if (cur === me) { me = null; store.del('me'); }
-      else { me = cur; store.set('me', me); }
-      render();
-    };
-    /* spouses too — kinship already phrases from a wife’s point of view */
-    f.appendChild(meBtn);
+    f.appendChild(setMeButton());
 
     const pdf = el('button', '', 'ذخیره به صورت PDF');
     pdf.onclick = () => printPage(nameOf(cur), view !== 'person');
@@ -848,6 +854,11 @@ function start(archive, assets) {
     head.appendChild(el('div', 'rel', me ? r : 'برای دیدن نسبت‌ها نام خودتان را انتخاب کنید'));
     app.appendChild(head);
     app.appendChild(lens());
+    if (n.spouseOf) {
+      const meRow = el('div', 'me-action');
+      meRow.appendChild(setMeButton('accent'));
+      app.appendChild(meRow);
+    }
 
     if (root) {
       const w = el('div', 'emblem-big');
@@ -961,13 +972,16 @@ function start(archive, assets) {
 
     if (n.spouseOf) {
       /* she has no bloodline of her own here: show the marriage and say where
-         the line actually continues */
+         the line actually continues — and still let her set شما here */
       wrap.appendChild(el('div', 'tlabel', 'همسرِ'));
       const r = el('div', 'tier');
       r.appendChild(shieldNode(n.spouseOf, 'up', nameOf(n.spouseOf), rel(n.spouseOf)));
       wrap.appendChild(r);
       wrap.appendChild(el('div', 'stem'));
       wrap.appendChild(el('div', 'lead', 'تبارِ خونی از سمت ' + nameOf(n.spouseOf) + ' دنبال می‌شود'));
+      const meRow = el('div', 'me-action');
+      meRow.appendChild(setMeButton('accent'));
+      wrap.appendChild(meRow);
     } else {
       const line = chain(cur), ups = line.slice(0, -1);
       if (ups.length) {
