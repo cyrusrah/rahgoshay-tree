@@ -579,10 +579,20 @@ function start(archive, assets) {
     del(k) { try { localStorage.removeItem(k); } catch {} },
   };
   let me = store.get('me', null); if (!P[me]) me = null;
-  /* ?me=ID — gift / challenge can land dad already as «من» */
+  /* Gift / challenge can force «من» via ?gift=1 (ASCII-safe) or ?me=ID */
   try {
-    const meParam = new URLSearchParams(location.search).get('me');
-    if (meParam && P[meParam]) { me = meParam; store.set('me', me); }
+    const q = new URLSearchParams(location.search);
+    let id = q.get('me');
+    if (q.has('gift')) {
+      const g = q.get('gift');
+      if (!g || g === '1' || g === 'dad') id = 'ب-2-2';
+      else id = g;
+    }
+    if (id) {
+      try { id = decodeURIComponent(id); } catch {}
+      try { id = id.normalize('NFC'); } catch {}
+      if (P[id]) { me = id; store.set('me', me); }
+    }
   } catch {}
   let picks = (store.get('picks', []) || []).filter(id => P[id]);
   let cur = 'ROOT';

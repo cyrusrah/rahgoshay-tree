@@ -180,10 +180,10 @@ a.go:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 <script>
 /* ==================================================================
    ویرایش از اینجا
-   TREE_URL  : لینک درخت + ?me=… تا «من» همان‌جا ست شود
+   TREE_URL  : لینک درخت + ?gift=1 تا «من» روی پدر ست شود
    CARDS     : پنج در — lead / q / opts / answer / hint / mark / img?
    ================================================================== */
-const TREE_URL = "https://cyrusrah.github.io/rahgoshay-tree/?me=%D8%A8-2-2#%D8%A8-2-2";
+const TREE_URL = "https://cyrusrah.github.io/rahgoshay-tree/?gift=1#%D8%A8-2-2";
 const ME_ID = "ب-2-2";
 
 const MARKS = {
@@ -351,9 +351,11 @@ function advance(btn){
       final.classList.add('on');
       const go = document.getElementById('go');
       go.href = TREE_URL;
-      go.addEventListener('click', () => {
-        try { localStorage.setItem('me', JSON.stringify(ME_ID)); } catch (e) {}
-      });
+      go.onclick = (e) => {
+        e.preventDefault();
+        try { localStorage.setItem('me', JSON.stringify(ME_ID)); } catch (err) {}
+        location.assign(TREE_URL);
+      };
     }
   }, btn ? 620 : 280);
 }
