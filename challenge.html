@@ -40,6 +40,9 @@ header .place{font-size:12px;font-weight:600;color:var(--muted);margin-top:8px;l
 header h1{font-family:var(--naskh);font-size:28px;font-weight:600;margin:14px 0 8px;letter-spacing:.02em}
 header .lede{font-family:var(--naskh);font-size:18px;line-height:1.95;color:var(--ink);
   text-align:justify;margin:0 4px 6px}
+header .verse{font-family:var(--naskh);font-size:20px;font-weight:600;line-height:2.05;
+  text-align:center;color:var(--oxblood);margin:18px 8px 4px;letter-spacing:.02em}
+header .verse span{display:block}
 header .sub{font-size:13px;color:var(--muted);margin:10px 4px 0;line-height:1.75}
 
 .girih{height:6px;margin:22px 0 20px;background-color:var(--rule);opacity:.55;
@@ -59,10 +62,12 @@ header .sub{font-size:13px;color:var(--muted);margin:10px 4px 0;line-height:1.75
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 
 .no{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em;
-  display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .no::after{content:"";flex:1;height:1px;background:var(--rule)}
-.lead{font-size:14px;color:var(--muted);line-height:1.8;margin:0 0 12px}
-.q{font-family:var(--naskh);font-size:21px;line-height:1.9;margin:0 0 18px;font-weight:400}
+.lead{font-family:var(--naskh);font-size:24px;font-weight:600;color:var(--ink);
+  line-height:1.55;margin:0 0 16px;letter-spacing:.02em}
+.q{font-family:var(--naskh);font-size:19px;line-height:1.9;margin:0 0 18px;font-weight:400;
+  color:var(--ink)}
 
 .portrait{display:flex;justify-content:center;margin:0 0 16px}
 .shield{position:relative;width:132px;height:166px}
@@ -154,14 +159,14 @@ body.leaving .wrap{opacity:0;transition:opacity .7s ease;pointer-events:none}
     <img class="emb" src="emblem.svg" alt="نشان خانواده رهگشای">
     <div class="place">بادرود</div>
     <h1>پنج در</h1>
-    <p class="lede">این صفحه یک هدیه است، نه یک آزمون. پنج پرسش کوتاه — بعضی از خانه‌اند، بعضی از راه — و وقتی درها باز شوند، رهگشای راه را باز می‌کند.</p>
-    <p class="sub">اگر کارت‌های کاغذی را هم داری، همان پنج را اینجا انتخاب کن. اشتباه عیب نیست؛ راه باز می‌شود.</p>
+    <p class="lede">این صفحه یک هدیه است، نه یک آزمون. پنج در کوتاه از خاطره و راه و نام.</p>
+    <p class="verse" lang="fa"><span>پاسخ بده، در بگشا</span><span>راهِ هدیه رهگشا</span></p>
   </header>
 
   <div class="girih" aria-hidden="true"></div>
 
   <div class="start-gate" id="startGate">
-    <p class="hint">وقتی آماده‌ای، درها را یکی‌یکی باز کن.</p>
+    <p class="hint">هر در یک پرسش است؛ اشتباه عیب نیست.</p>
     <button type="button" class="begin" id="begin">شروع</button>
   </div>
 
@@ -194,7 +199,7 @@ body.leaving .wrap{opacity:0;transition:opacity .7s ease;pointer-events:none}
       <img src="mark-legend.svg" alt="">
     </div>
     <h2 class="reveal">تولدت مبارک، بابا</h2>
-    <p class="gloss reveal">پنج در باز شد — پشتشان یک هدیه از ما برای توست.</p>
+    <p class="gloss reveal">پنج در باز شد؛ پشتشان یک هدیه از ما برای توست.</p>
     <div class="reveal"><a class="go" id="go" href="#">حاجی باج کن</a></div>
   </div>
 </div>
@@ -206,7 +211,7 @@ body.leaving .wrap{opacity:0;transition:opacity .7s ease;pointer-events:none}
 /* ==================================================================
    ویرایش از اینجا
    TREE_URL  : لینک درخت + ?gift=1 تا «من» روی پدر ست شود
-   CARDS     : پنج در — lead / q / opts / answer / hint / mark / img?
+   CARDS     : پنج در (lead / q / opts / answer / hint / mark)
    ================================================================== */
 const TREE_URL = "https://cyrusrah.github.io/rahgoshay-tree/?gift=1#%D8%A8-2-2";
 const ME_ID = "ب-2-2";
@@ -219,15 +224,15 @@ const MARKS = {
 
 const CARDS = [
   {
-    lead: "در اول — خانه",
+    lead: "در اول: نسب",
     q: "کدام‌یک از این‌ها فرزند حاج باقر نیست؟",
     opts: ["رضا", "محمد باقر", "ملاعلی"],
     answer: 1,
     mark: "boteh",
-    hint: "چهار پسر داشت. این یکی نوه است — پسرِ رضا."
+    hint: "چهار پسر داشت. این یکی نوه است؛ پسرِ رضا."
   },
   {
-    lead: "در دوم — راه",
+    lead: "در دوم: راه",
     q: "در چه سالی ایران را ترک کردی تا به فرانسه بروی؟",
     opts: ["۱۹۷۴", "۱۹۷۵", "۱۹۷۹"],
     answer: 1,
@@ -235,25 +240,24 @@ const CARDS = [
     hint: "سال رفتن است، نه سال انقلاب."
   },
   {
-    lead: "در سوم — نگاه",
-    q: "این عکس کجا گرفته شده؟",
-    /* اگر عکسی داری: img: "photos/ب-2-2.jpg", */
-    opts: ["…", "…", "…"],
-    answer: 0,
+    lead: "در سوم: فصل",
+    q: "🍞 در چه فصلی به دنیا آمد؟",
+    opts: ["بهار", "تابستان", "زمستان"],
+    answer: 2,
     mark: "unknown",
-    hint: "به پس‌زمینه و درِ پشت سر نگاه کن، نه فقط به چهره‌ها."
+    hint: "سردترین فصل."
   },
   {
-    lead: "در چهارم — نام",
-    q: "کسی که همه به او […] می‌گفتند، اسم واقعی‌اش چه بود؟",
-    opts: ["…", "…", "…"],
-    answer: 0,
+    lead: "در چهارم: جشن",
+    q: "عجیب‌ترین کیک تولدت کجا بود؛ همان پیتزا؟",
+    opts: ["نیس", "مونترال", "تهران"],
+    answer: 1,
     mark: "boteh",
-    hint: "لقب خانه است؛ اسم واقعی‌اش را خوب به یاد بیاور."
+    hint: "شهری سرد در کانادا؛ نه فرانسه، نه ایران."
   },
   {
-    lead: "در پنجم — معنا",
-    q: "نام خانوادگی ما — رهگشای — یعنی چه؟",
+    lead: "در پنجم: نام",
+    q: "نام خانوادگی ما، رهگشای، یعنی چه؟",
     opts: [
       "آن که راه می‌گشاید",
       "نگهبان باغ انار",
@@ -326,7 +330,7 @@ function paintMark(c){
 function render(){
   const c = CARDS[i];
   wrong = 0;
-  noEl.textContent = 'در ' + fa(i + 1) + ' از ' + fa(CARDS.length);
+  noEl.textContent = fa(i + 1) + ' از ' + fa(CARDS.length);
   if (c.lead){ leadEl.hidden = false; leadEl.textContent = c.lead; }
   else { leadEl.hidden = true; leadEl.textContent = ''; }
   qEl.textContent = c.q;
@@ -353,7 +357,7 @@ function pick(btn, ok){
   card.classList.add('shake');
   setTimeout(() => card.classList.remove('shake'), 340);
   if (wrong === 1){
-    note.textContent = 'نه — یک‌بار دیگر فکر کن.';
+    note.textContent = 'نه؛ یک‌بار دیگر فکر کن.';
   } else if (wrong === 2){
     note.textContent = CARDS[i].hint || 'نزدیک شده‌ای.';
     note.className = 'note warm';
